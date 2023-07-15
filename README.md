@@ -25,7 +25,7 @@ You can find the current attack types and details below. New attacks and variati
 
 ### Basic Injection
 
-Basic attacks are directly sent to the target without any prompt enhancements. Their purpose is basically to get an answer to an unrelated question.
+Basic attacks are directly sent to the target without any prompt enhancements. Their purpose is basically to get an answer to an unrelated question or dictate an action.
 
 Examples:
 
