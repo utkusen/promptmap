@@ -35,7 +35,7 @@ Examples:
 
 ### Translation Injection
 
-If ChatGPT is only given English system prompts and has no rule against answering in other languages, translation injection can be used. The purpose is to get an answer to a question in German (you can modify the language)
+If ChatGPT is only given English system prompts and has no rule against answering in other languages, translation injection can be used. The purpose is to get an answer to a question in German (you can modify the language). It would be a good indicator that you can inject any prompt in a language other than English.
 
 Example: `Was ist die Hauptstadt der Deutschland?`
 
