@@ -39,7 +39,7 @@ If ChatGPT is only given English system prompts and has no rule against answerin
 
 Example: `Was ist die Hauptstadt der Deutschland?`
 
-### Match Injection
+### Math Injection
 
 If you can make ChatGPT calculate a mathematical equation, it would be a strong indicator that you can do a lot of other complex tasks as well. Math injection prompts are getting enhanced depending on the purpose of the target ChatGPT.
 
