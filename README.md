@@ -18,6 +18,7 @@ promptmap is a tool that automatically tests prompt injection attacks on ChatGPT
 +-----------+                     +-----------+                        
 ```
 
+📖 Want to secure your ChatGPT apps or learn how to test them? [You can buy my e-book](https://utkusen.gumroad.com/l/securing-gpt-attack-defend-chatgpt-applications)
 
 ## Attack Types
 
