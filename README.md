@@ -28,13 +28,13 @@ You can find the current attack types and details below. New attacks and variati
 
 Basic attacks are directly sent to the target without any prompt enhancements. Their purpose is basically to get an answer to an unrelated question or dictate an action.
 
-**Developer mode:** We are trying to convince the target that we are its developer and it should ignore previous rules.
+- **Developer mode:** We are trying to convince the target that we are its developer and it should ignore previous rules.
 
-**Act as..:**` We want the target to act like something.
+- **Act as..:** We want the target to act like something.
 
-**Carnegie Mellon Jailbreak:** It's an attack type [found](https://llm-attacks.org/) by researchers at Carnegie Mellon University.
+- **Carnegie Mellon Jailbreak:** It's an attack type [found](https://llm-attacks.org/) by researchers at Carnegie Mellon University.
 
-**Typoglycemia:** We are trying to convince the target that it has typoglycemia condition. This method is found by [@lauriewired](https://twitter.com/lauriewired/status/1682825249203662848) 
+- **Typoglycemia:** We are trying to convince the target that it has typoglycemia condition. This method is found by [@lauriewired](https://twitter.com/lauriewired/status/1682825249203662848) 
 
 ### Translation Injection
 
