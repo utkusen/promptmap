@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img width=60% height=60% src="https://i.imgur.com/sWBOYuW.png">
+  <img width=50% height=50% src="https://i.imgur.com/dc6R8t2.png">
 </p>
 
 Prompt injection is a type of security vulnerability that can be exploited to control the behavior of a ChatGPT instance. By injecting malicious prompts into the system, an attacker can force the ChatGPT instance to do unintended actions.
