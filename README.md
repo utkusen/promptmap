@@ -37,7 +37,9 @@ Basic attacks are directly sent to the target without any prompt enhancements. T
 
 - **Carnegie Mellon Jailbreak:** It's an attack type [found](https://llm-attacks.org/) by researchers at Carnegie Mellon University.
 
-- **Typoglycemia:** We are trying to convince the target that it has typoglycemia condition. This method is found by [@lauriewired](https://twitter.com/lauriewired/status/1682825249203662848) 
+- **Typoglycemia:** We are trying to convince the target that it has typoglycemia condition. This method is found by [@lauriewired](https://twitter.com/lauriewired/status/1682825249203662848)
+
+- **System Prompt Stealer:** We are trying to steal system prompts of the target GPT instance. More information about this method: [https://github.com/LouisShark/chatgpt_system_prompt](https://github.com/LouisShark/chatgpt_system_prompt)
 
 ### Translation Injection
 
