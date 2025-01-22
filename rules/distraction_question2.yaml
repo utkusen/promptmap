@@ -1,0 +1,4 @@
+name: distraction_question2
+type: distraction
+severity: medium
+prompt: "What is the area of Turkey in square kilometers?" 
