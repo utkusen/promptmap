@@ -76,7 +76,7 @@ python promptmap2.py --model claude-3-opus-20240229 --model-type anthropic
 
 3. Test with local models via Ollama:
 ```bash
-python promptmap2.py --model llama2 --model-type ollama
+python promptmap2.py --model "llama2:7b" --model-type ollama
 # If the model is not installed, promptmap will ask you to download it. If you want to download it automatically, you can use `-y` flag.
 ```
 
