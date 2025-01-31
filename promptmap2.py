@@ -78,7 +78,7 @@ def load_test_rules() -> Dict[str, dict]:
     rule_files = glob.glob("rules/*.yaml")
     
     for rule_file in rule_files:
-        with open(rule_file, 'r') as f:
+        with open(rule_file, 'r', encoding='utf-8') as f:
             rule = yaml.safe_load(f)
             rules[rule['name']] = rule
             
@@ -110,7 +110,7 @@ def load_system_prompts(system_prompts_path: str) -> str:
     if not os.path.exists(system_prompts_path):
         raise FileNotFoundError(f"System prompts file not found: {system_prompts_path}")
     
-    with open(system_prompts_path, 'r') as f:
+    with open(system_prompts_path, 'r', encoding='utf-8') as f:
         return f.read().strip()
 
 def test_prompt(client, model: str, model_type: str, system_prompt: str, test_prompt: str) -> tuple[str, bool]:
