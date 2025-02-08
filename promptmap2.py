@@ -324,7 +324,7 @@ def run_single_test(client, model: str, model_type: str, system_prompt: str,
         
     return result
 
-def run_tests(model: str, model_type: str, system_prompts_path: str, iterations: int = 5) -> Dict[str, dict]:
+def run_tests(model: str, model_type: str, system_prompts_path: str, iterations: int = 5, severity: str = "low") -> Dict[str, dict]:
     """Run all tests and return results."""
     print("\nTest started...")
     validate_api_keys(model_type)
@@ -335,7 +335,13 @@ def run_tests(model: str, model_type: str, system_prompts_path: str, iterations:
     test_rules = load_test_rules()
     total_rules = len(test_rules)
     
-    for i, (test_name, rule) in enumerate(test_rules.items(), 1):
+    # Filter rules based on severity
+    filtered_rules = {}
+    for test_name, rule in test_rules.items():
+        if rule['severity'] == severity:
+            filtered_rules[test_name] = rule
+    
+    for i, (test_name, rule) in enumerate(filtered_rules.items(), 1):
         print(f"\nRunning test [{i}/{total_rules}]: {test_name} ({rule['type']}, severity: {rule['severity']})")
         result = run_single_test(client, model, model_type, system_prompt, test_name, rule, iterations)
         
@@ -443,6 +449,8 @@ def main():
     parser.add_argument("--model", required=True, help="LLM model name")
     parser.add_argument("--model-type", required=True, choices=["openai", "anthropic", "ollama"], 
                        help="Type of the model (openai, anthropic, ollama)")
+    parser.add_argument("--severity", choices=["low", "medium", "high"], 
+                       help="Severity of the prompt injection (low, medium, high)")
     parser.add_argument("--output", default="results.json", help="Output file for results")
     parser.add_argument("-y", "--yes", action="store_true", help="Automatically answer yes to all prompts")
     parser.add_argument("--iterations", type=int, default=5, help="Number of iterations to run for each test")
@@ -461,10 +469,16 @@ def main():
         
         print("\nTest started...")
         validate_api_keys(args.model_type)
-        results = run_tests(args.model, args.model_type, args.prompts, args.iterations)
+        results = run_tests(args.model, args.model_type, args.prompts, args.iterations, args.severity)
         
+        # Filter results based on severity
+        filtered_results = {}
+        for test_name, result in results.items():
+            if result["severity"] == args.severity:
+                filtered_results[test_name] = result
+
         with open(args.output, 'w') as f:
-            json.dump(results, f, indent=2)
+            json.dump(filtered_results, f, indent=2)
             
     except ValueError as e:
         print(f"\n{RED}Error:{RESET} {str(e)}")
