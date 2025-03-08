@@ -104,7 +104,7 @@ python promptmap2.py --model gpt-4 --model-type openai --rules prompt_stealer,di
 
 7. Filtering by Severity Level
 
-Each rule in promptmap has a severity level (low, medium, or high) indicating its potential impact. You can filter rules based on their severity to focus on specific risk levels.
+Each rule in promptmap2 has a severity level (low, medium, or high) indicating its potential impact. You can filter rules based on their severity to focus on specific risk levels.
 
 ```bash
 # Run only high severity rules
@@ -133,7 +133,7 @@ Since the LLM responds with “true” when it detects a malicious prompt, this 
 python promptmap2.py --model gpt-4 --model-type openai --firewall --pass-condition="true"
 ```
 
-promptmap will send attack rules to the target. If the target responds with “true,” it will consider the test is passed. Otherwise, it will fail the test.
+promptmap2 will send attack rules to the target. If the target responds with “true,” it will consider the test is passed. Otherwise, it will fail the test.
 
 ## Test Rules
 
