@@ -10,7 +10,7 @@
 /  |-----| |_|                |_|                 |_|  |_____|    
 ```
 
-promptmap2 is a vulnerability scanning tool that automatically tests prompt injection attacks on your custom LLM applications. It analyzes your LLM system prompts, runs them, and sends attack prompts to them. By checking the response, it can determine if the prompt injection was successful or not. (From the traditional application security perspective, it's a combination of SAST and DAST. It does dynamic analysis, but it needs to see your code.)
+promptmap2 is a vulnerability scanning tool that automatically tests prompt injection and similar attacks on your custom LLM applications. It analyzes your LLM system prompts, runs them, and sends attack prompts to them. By checking the response, it can determine if the attack was successful or not. (From the traditional application security perspective, it's a combination of SAST and DAST. It does dynamic analysis, but it needs to see your code.)
 
 It operates using a dual-LLM architecture:
 
