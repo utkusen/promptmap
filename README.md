@@ -96,7 +96,7 @@ python3 promptmap2.py --target-model claude-3-opus-20240229 --target-model-type 
 
 3. Testing Google Gemini models:
 ```bash
-python3 promptmap2.py --target-model gemini-1.5-pro --target-model-type gemini
+python3 promptmap2.py --target-model gemini-2.5-pro --target-model-type gemini
 ```
 
 4. Testing XAI Grok models:
