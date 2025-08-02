@@ -110,6 +110,13 @@ python3 promptmap2.py --target-model "llama2:7b" --target-model-type ollama
 # If the model is not installed, promptmap will ask you to download it. If you want to download it automatically, you can use `-y` flag.
 ```
 
+6. Testing with custom Ollama server location:
+```bash
+# By default, promptmap2 connects to Ollama at http://localhost:11434
+# You can specify a custom URL if your Ollama server is running elsewhere
+python3 promptmap2.py --target-model "llama2:7b" --target-model-type ollama --ollama-url http://192.168.1.100:11434
+```
+
 ### Using Different Controller Models
 
 By default, the same model is used as both target and controller. 

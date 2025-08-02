@@ -10,6 +10,7 @@ import openai
 from openai import OpenAI
 import anthropic
 import ollama
+from ollama import Client as OllamaClient
 try:
     from google import genai
 except ImportError:
@@ -53,10 +54,10 @@ Output absolutely nothing else—no explanations, extra lines, or code fences. Y
 
 
 
-def is_ollama_running() -> bool:
+def is_ollama_running(ollama_url: str = "http://localhost:11434") -> bool:
     """Check if Ollama server is running."""
     try:
-        requests.get("http://localhost:11434/api/tags")
+        requests.get(f"{ollama_url}/api/tags")
         return True
     except requests.exceptions.ConnectionError:
         return False
@@ -75,15 +76,15 @@ def get_ollama_path():
     
     raise FileNotFoundError("Ollama executable not found. Please make sure Ollama is installed.")
 
-def start_ollama():
+def start_ollama(ollama_url: str = "http://localhost:11434"):
     """Start Ollama server."""
-    print("Starting Ollama server...")
+    print("Connecting to the Ollama server...")
     try:
         ollama_path = get_ollama_path()
         subprocess.Popen([ollama_path, "serve"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         # Wait for server to start
         for _ in range(10):
-            if is_ollama_running():
+            if is_ollama_running(ollama_url):
                 print("Ollama server is running")
                 return True
             time.sleep(1)
@@ -93,14 +94,14 @@ def start_ollama():
         print("Please install Ollama first: https://ollama.ai/download")
         return False
 
-def ensure_model_exists(model: str):
+def ensure_model_exists(model: str, ollama_client):
     """Ensure the Ollama model exists, download if not."""
     try:
-        ollama.list()
+        ollama_client.list()
     except Exception:
         print(f"Model {model} not found. Downloading...")
         try:
-            ollama.pull(model)
+            ollama_client.pull(model)
             print(f"Model {model} downloaded successfully")
         except Exception as e:
             print(f"Error downloading model: {str(e)}")
@@ -134,7 +135,7 @@ def validate_api_keys(target_model_type: str, controller_model_type: str = None)
         elif model_type == "xai" and not os.getenv("XAI_API_KEY"):
             raise ValueError("XAI_API_KEY environment variable is required for XAI models")
 
-def initialize_client(model_type: str):
+def initialize_client(model_type: str, ollama_url: str = "http://localhost:11434"):
     """Initialize the appropriate client based on the model type."""
     if model_type == "openai":
         return OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -145,10 +146,11 @@ def initialize_client(model_type: str):
             raise ImportError("google-genai package is required for Google models. Install with: pip install google-genai")
         return genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
     elif model_type == "ollama":
-        if not is_ollama_running():
-            if not start_ollama():
+        if not is_ollama_running(ollama_url):
+            if not start_ollama(ollama_url):
                 raise RuntimeError("Failed to start Ollama server")
-        return None
+        # Return Ollama client with custom URL
+        return OllamaClient(host=ollama_url)
     elif model_type == "xai":
         return OpenAI(
             api_key=os.getenv("XAI_API_KEY"),
@@ -157,12 +159,12 @@ def initialize_client(model_type: str):
     else:
         raise ValueError(f"Unsupported model type: {model_type}")
 
-def initialize_clients(target_model_type: str, controller_model_type: str = None):
+def initialize_clients(target_model_type: str, controller_model_type: str = None, ollama_url: str = "http://localhost:11434"):
     """Initialize target and controller clients."""
-    target_client = initialize_client(target_model_type)
+    target_client = initialize_client(target_model_type, ollama_url)
     
     if controller_model_type and controller_model_type != target_model_type:
-        controller_client = initialize_client(controller_model_type)
+        controller_client = initialize_client(controller_model_type, ollama_url)
     else:
         controller_client = target_client
     
@@ -214,8 +216,8 @@ def test_prompt(client, model: str, model_type: str, system_prompt: str, test_pr
             return response.text, False
             
         elif model_type == "ollama":
-            ensure_model_exists(model)
-            response = ollama.chat(
+            ensure_model_exists(model, client)
+            response = client.chat(
                 model=model,
                 messages=[
                     {"role": "system", "content": system_prompt},
@@ -761,11 +763,11 @@ def run_single_test(target_client, target_model: str, target_model_type: str,
         
     return result
 
-def run_tests(target_model: str, target_model_type: str, controller_model: str, controller_model_type: str, system_prompts_path: str, iterations: int = 5, severities: list = None, rule_names: list = None, rule_types: list = None, firewall_mode: bool = False, pass_condition: str = None, fail_only: bool = False) -> Dict[str, dict]:
+def run_tests(target_model: str, target_model_type: str, controller_model: str, controller_model_type: str, system_prompts_path: str, iterations: int = 5, severities: list = None, rule_names: list = None, rule_types: list = None, firewall_mode: bool = False, pass_condition: str = None, fail_only: bool = False, ollama_url: str = "http://localhost:11434") -> Dict[str, dict]:
     """Run all tests and return results."""
     print("\nTest started...")
     validate_api_keys(target_model_type, controller_model_type)
-    target_client, controller_client = initialize_clients(target_model_type, controller_model_type)
+    target_client, controller_client = initialize_clients(target_model_type, controller_model_type, ollama_url)
     system_prompt = load_system_prompts(system_prompts_path)
     results = {}
     
@@ -837,10 +839,10 @@ def run_tests(target_model: str, target_model_type: str, controller_model: str, 
     print("\nAll tests completed.")
     return results
 
-def get_available_ollama_models() -> List[str]:
+def get_available_ollama_models(ollama_url: str = "http://localhost:11434") -> List[str]:
     """Get list of available Ollama models."""
     try:
-        response = requests.get("http://localhost:11434/api/tags")
+        response = requests.get(f"{ollama_url}/api/tags")
         if response.status_code == 200:
             models = response.json().get("models", [])
             # Return both full names and base names without tags
@@ -856,15 +858,15 @@ def get_available_ollama_models() -> List[str]:
     except:
         return []
 
-def validate_model(model: str, model_type: str, auto_yes: bool = False) -> bool:
+def validate_model(model: str, model_type: str, auto_yes: bool = False, ollama_url: str = "http://localhost:11434") -> bool:
     """Validate if the model exists for the given model type."""
     if model_type == "ollama":
-        if not is_ollama_running():
-            if not start_ollama():
+        if not is_ollama_running(ollama_url):
+            if not start_ollama(ollama_url):
                 print("Error: Could not start Ollama server")
                 return False
                 
-        available_models = get_available_ollama_models()
+        available_models = get_available_ollama_models(ollama_url)
         if model not in available_models:
             print(f"Model '{model}' not found in Ollama.")
             # Show available models without duplicates
@@ -899,8 +901,11 @@ Usage Examples:
 3. Test with Google Gemini:
    python promptmap2.py --target-model gemini-2.5-flash --target-model-type google
 
-4. Test with Ollama:
+4. Test with Ollama (local):
    python promptmap2.py --target-model llama2 --target-model-type ollama
+   
+   Test with Ollama (custom URL):
+   python promptmap2.py --target-model llama2 --target-model-type ollama --ollama-url http://192.168.1.100:11434
 
 5. Test with XAI Grok:
    python promptmap2.py --target-model grok-beta --target-model-type xai
@@ -971,6 +976,7 @@ def main():
     parser.add_argument("--firewall", action="store_true", help="Enable firewall testing mode")
     parser.add_argument("--pass-condition", help="Expected response in firewall mode (required if --firewall is used)")
     parser.add_argument("--fail", action="store_true", help="Only print failed test cases (hide passed cases)")
+    parser.add_argument("--ollama-url", default="http://localhost:11434", help="Ollama server URL (default: http://localhost:11434)")
     
     try:
         args = parser.parse_args()
@@ -1003,18 +1009,18 @@ def main():
             raise ValueError("--pass-condition is required when using --firewall mode")
         
         # Validate models before running tests
-        if not validate_model(args.target_model, args.target_model_type, args.yes):
+        if not validate_model(args.target_model, args.target_model_type, args.yes, args.ollama_url):
             return 1
         
         # Only validate controller model if it's different from target
         if (args.controller_model != args.target_model or args.controller_model_type != args.target_model_type):
-            if not validate_model(args.controller_model, args.controller_model_type, args.yes):
+            if not validate_model(args.controller_model, args.controller_model_type, args.yes, args.ollama_url):
                 return 1
         
         print("\nTest started...")
         validate_api_keys(args.target_model_type, args.controller_model_type)
         results = run_tests(args.target_model, args.target_model_type, args.controller_model, args.controller_model_type, 
-                          args.prompts, args.iterations, args.severity, args.rules, rule_types, args.firewall, args.pass_condition, args.fail)
+                          args.prompts, args.iterations, args.severity, args.rules, rule_types, args.firewall, args.pass_condition, args.fail, args.ollama_url)
         
         with open(args.output, 'w') as f:
             json.dump(results, f, indent=2)
