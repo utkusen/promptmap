@@ -22,7 +22,7 @@ The tool sends attack prompts to your target LLM and uses the controller LLM to 
 It includes comprehensive test rules across multiple categories including prompt stealing, jailbreaking, harmful content generation, bias testing, and more.
 
 > [!IMPORTANT]  
-> promptmap was initially released in 2022 but completely rewritten in 2025. (and changed again in July 2025)
+> promptmap was initially released in 2023 but completely rewritten in 2025.
 
 📖 Want to secure your LLM apps? [You can buy my e-book](https://utkusen.gumroad.com/l/securing-gpt-attack-defend-chatgpt-applications)
 
