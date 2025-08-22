@@ -67,7 +67,7 @@ export OPENAI_API_KEY="your-openai-key"
 export ANTHROPIC_API_KEY="your-anthropic-key"
 
 # For Google Gemini models
-export GEMINI_API_KEY="your-gemini-key"
+export GOOGLE_API_KEY="your-gemini-key"
 
 # For XAI Grok models
 export XAI_API_KEY="your-xai-grok-key"
@@ -96,7 +96,7 @@ python3 promptmap2.py --target-model claude-3-opus-20240229 --target-model-type 
 
 3. Testing Google Gemini models:
 ```bash
-python3 promptmap2.py --target-model gemini-2.5-pro --target-model-type gemini
+python3 promptmap2.py --target-model gemini-2.5-pro --target-model-type google
 ```
 
 4. Testing XAI Grok models:
@@ -140,7 +140,7 @@ python3 promptmap2.py --target-model llama2:7b --target-model-type ollama \
 
 # Use Gemini 2.5 Pro as controller for testing Grok
 python3 promptmap2.py --target-model grok-beta --target-model-type xai \
-  --controller-model gemini-2.5-pro --controller-model-type gemini
+  --controller-model gemini-2.5-pro --controller-model-type google
 ```
 
 ### Advanced Options
