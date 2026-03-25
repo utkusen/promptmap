@@ -393,6 +393,8 @@ def validate_api_keys(target_model_type: str, controller_model_type: str = None)
             raise ValueError("GOOGLE_API_KEY environment variable is required for Google models")
         elif model_type == "xai" and not os.getenv("XAI_API_KEY"):
             raise ValueError("XAI_API_KEY environment variable is required for XAI models")
+        elif model_type == "minimax" and not os.getenv("MINIMAX_API_KEY"):
+            raise ValueError("MINIMAX_API_KEY environment variable is required for MiniMax models")
         elif model_type == "http":
             continue
 
@@ -416,6 +418,11 @@ def initialize_client(model_type: str, ollama_url: str = "http://localhost:11434
         return OpenAI(
             api_key=os.getenv("XAI_API_KEY"),
             base_url="https://api.x.ai/v1"
+        )
+    elif model_type == "minimax":
+        return OpenAI(
+            api_key=os.getenv("MINIMAX_API_KEY"),
+            base_url="https://api.minimax.io/v1"
         )
     elif model_type == "http":
         if http_config is None:
@@ -505,6 +512,19 @@ def test_prompt(client, model: str, model_type: str, system_prompt: str, test_pr
                 ]
             )
             return response.choices[0].message.content, False
+        elif model_type == "minimax":
+            response = client.chat.completions.create(
+                model=model,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": test_prompt}
+                ]
+            )
+            content = response.choices[0].message.content
+            # Strip <think>...</think> tags from reasoning models
+            if content and "<think>" in content:
+                content = re.sub(r"<think>[\s\S]*?</think>\s*", "", content).strip()
+            return content, False
         elif model_type == "http":
             return send_http_request(client, test_prompt)
 
@@ -1393,9 +1413,10 @@ Usage Examples:
 
 Note: Make sure to set the appropriate API key in your environment:
 - For OpenAI models: export OPENAI_API_KEY="your-key"
-- For Anthropic models: export ANTHROPIC_API_KEY="your-key"  
+- For Anthropic models: export ANTHROPIC_API_KEY="your-key"
 - For Google models: export GOOGLE_API_KEY="your-key"
 - For XAI models: export XAI_API_KEY="your-key"
+- For MiniMax models: export MINIMAX_API_KEY="your-key"
 
 """)
 
@@ -1415,13 +1436,13 @@ def main():
     
     # Target model arguments (required)
     parser.add_argument("--target-model", required=True, help="Target LLM model name (model to be tested)")
-    parser.add_argument("--target-model-type", required=True, choices=["openai", "anthropic", "google", "ollama", "xai", "http"], 
-                       help="Type of the target model (openai, anthropic, google, ollama, xai, http)")
+    parser.add_argument("--target-model-type", required=True, choices=["openai", "anthropic", "google", "ollama", "xai", "minimax", "http"],
+                       help="Type of the target model (openai, anthropic, google, ollama, xai, minimax, http)")
     
     # Controller model arguments (optional - defaults to target model)
     parser.add_argument("--controller-model", help="Controller LLM model name (model for evaluation, defaults to target model)")
-    parser.add_argument("--controller-model-type", choices=["openai", "anthropic", "google", "ollama", "xai"], 
-                       help="Type of the controller model (openai, anthropic, google, ollama, xai, defaults to target model type)")
+    parser.add_argument("--controller-model-type", choices=["openai", "anthropic", "google", "ollama", "xai", "minimax"],
+                       help="Type of the controller model (openai, anthropic, google, ollama, xai, minimax, defaults to target model type)")
     parser.add_argument("--severity", type=lambda s: [item.strip() for item in s.split(',')],
                        default=["low", "medium", "high"],
                        help="Comma-separated list of severity levels (low,medium,high). Defaults to all severities.")
