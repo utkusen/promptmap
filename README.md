@@ -37,6 +37,7 @@ It includes comprehensive test rules across multiple categories including prompt
   - Anthropic Claude models
   - Google Gemini models
   - XAI Grok models
+  - MiniMax models (M2.7, M2.5)
   - Open source models via Ollama (Deepseek, Llama, Mistral, Qwen, etc.)
 - **Comprehensive Test Rules**: 50+ pre-built rules across 6 categories
 - **Flexible Evaluation**: Condition-based pass/fail criteria for each test
@@ -66,7 +67,7 @@ Set the appropriate API key for your chosen provider.
 export OPENAI_API_KEY="your-openai-key"
 ```
 
-Other supported providers use `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY`, and `XAI_API_KEY`.
+Other supported providers use `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY`, `XAI_API_KEY`, and `MINIMAX_API_KEY`.
 
 ### Ollama Installation
 
@@ -87,7 +88,7 @@ You need to provide your system prompts file. Default file is `system-prompts.tx
 python3 promptmap2.py --target-model gpt-3.5-turbo --target-model-type openai
 ```
 
-Anthropic, Google, and XAI providers follow the same pattern: choose the right model name and set `--target-model-type` to `anthropic`, `google`, or `xai`.
+Anthropic, Google, XAI, and MiniMax providers follow the same pattern: choose the right model name and set `--target-model-type` to `anthropic`, `google`, `xai`, or `minimax`.
 
 2. Testing local models via Ollama:
 ```bash
@@ -111,6 +112,7 @@ By default, the same model is used as both target and controller.
 > - OpenAI GPT-5
 > - Google Gemini 2.5 Pro
 > - Anthropic Claude 4 Sonnet
+> - MiniMax M2.7
 > - gpt-oss:20b (via Ollama)
 > 
 > Weaker models may not analyze results accurately and could lead to false positives or negatives.
