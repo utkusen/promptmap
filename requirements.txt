@@ -5,3 +5,4 @@ google-genai>=0.7.0
 requests
 tiktoken
 PyYAML
+litellm>=1.60,<2.0

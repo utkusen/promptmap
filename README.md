@@ -38,6 +38,7 @@ It includes comprehensive test rules across multiple categories including prompt
   - Google Gemini models
   - XAI Grok models
   - Open source models via Ollama (Deepseek, Llama, Mistral, Qwen, etc.)
+  - 100+ providers via [LiteLLM](https://github.com/BerriAI/litellm) (AWS Bedrock, Azure, Vertex AI, etc.)
 - **Comprehensive Test Rules**: 50+ pre-built rules across 6 categories
 - **Flexible Evaluation**: Condition-based pass/fail criteria for each test
 - **Customizable Rules**: YAML-based rules with pass/fail conditions
@@ -66,7 +67,7 @@ Set the appropriate API key for your chosen provider.
 export OPENAI_API_KEY="your-openai-key"
 ```
 
-Other supported providers use `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY`, and `XAI_API_KEY`.
+Other supported providers use `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY`, `XAI_API_KEY`, or any provider's standard key via LiteLLM (see [providers list](https://docs.litellm.ai/docs/providers)).
 
 ### Ollama Installation
 
@@ -88,6 +89,14 @@ python3 promptmap2.py --target-model gpt-3.5-turbo --target-model-type openai
 ```
 
 Anthropic, Google, and XAI providers follow the same pattern: choose the right model name and set `--target-model-type` to `anthropic`, `google`, or `xai`.
+
+2. Testing with LiteLLM (100+ providers):
+```bash
+python3 promptmap2.py --target-model anthropic/claude-sonnet-4-6 --target-model-type litellm
+python3 promptmap2.py --target-model bedrock/anthropic.claude-3-sonnet-20240229-v1:0 --target-model-type litellm
+python3 promptmap2.py --target-model azure/gpt-4 --target-model-type litellm
+```
+Set the provider's standard API key env var (e.g. `ANTHROPIC_API_KEY`, `AWS_ACCESS_KEY_ID`). Full list: https://docs.litellm.ai/docs/providers
 
 2. Testing local models via Ollama:
 ```bash

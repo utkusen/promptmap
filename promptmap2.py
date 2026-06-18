@@ -393,6 +393,8 @@ def validate_api_keys(target_model_type: str, controller_model_type: str = None)
             raise ValueError("GOOGLE_API_KEY environment variable is required for Google models")
         elif model_type == "xai" and not os.getenv("XAI_API_KEY"):
             raise ValueError("XAI_API_KEY environment variable is required for XAI models")
+        elif model_type == "litellm":
+            continue
         elif model_type == "http":
             continue
 
@@ -417,6 +419,8 @@ def initialize_client(model_type: str, ollama_url: str = "http://localhost:11434
             api_key=os.getenv("XAI_API_KEY"),
             base_url="https://api.x.ai/v1"
         )
+    elif model_type == "litellm":
+        return None
     elif model_type == "http":
         if http_config is None:
             raise ValueError("HTTP config is required when using target-model-type 'http'")
@@ -503,6 +507,17 @@ def test_prompt(client, model: str, model_type: str, system_prompt: str, test_pr
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": test_prompt}
                 ]
+            )
+            return response.choices[0].message.content, False
+        elif model_type == "litellm":
+            import litellm
+            response = litellm.completion(
+                model=model,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": test_prompt}
+                ],
+                drop_params=True,
             )
             return response.choices[0].message.content, False
         elif model_type == "http":
@@ -1364,7 +1379,11 @@ Usage Examples:
 5. Test with XAI Grok:
    python promptmap2.py --target-model grok-beta --target-model-type xai
 
-6. Test with different target and controller models:
+6. Test with LiteLLM (100+ providers via unified API):
+   python promptmap2.py --target-model anthropic/claude-sonnet-4-6 --target-model-type litellm
+   python promptmap2.py --target-model bedrock/anthropic.claude-3-sonnet-20240229-v1:0 --target-model-type litellm
+
+7. Test with different target and controller models:
    python promptmap2.py --target-model llama2 --target-model-type ollama --controller-model gpt-4 --controller-model-type openai
 
 5. Run specific rules:
@@ -1396,6 +1415,8 @@ Note: Make sure to set the appropriate API key in your environment:
 - For Anthropic models: export ANTHROPIC_API_KEY="your-key"  
 - For Google models: export GOOGLE_API_KEY="your-key"
 - For XAI models: export XAI_API_KEY="your-key"
+- For LiteLLM: set the provider's API key (e.g. ANTHROPIC_API_KEY, AWS credentials, etc.)
+  See https://docs.litellm.ai/docs/providers for provider-specific setup
 
 """)
 
@@ -1415,13 +1436,13 @@ def main():
     
     # Target model arguments (required)
     parser.add_argument("--target-model", required=True, help="Target LLM model name (model to be tested)")
-    parser.add_argument("--target-model-type", required=True, choices=["openai", "anthropic", "google", "ollama", "xai", "http"], 
-                       help="Type of the target model (openai, anthropic, google, ollama, xai, http)")
+    parser.add_argument("--target-model-type", required=True, choices=["openai", "anthropic", "google", "ollama", "xai", "litellm", "http"],
+                       help="Type of the target model (openai, anthropic, google, ollama, xai, litellm, http)")
     
     # Controller model arguments (optional - defaults to target model)
     parser.add_argument("--controller-model", help="Controller LLM model name (model for evaluation, defaults to target model)")
-    parser.add_argument("--controller-model-type", choices=["openai", "anthropic", "google", "ollama", "xai"], 
-                       help="Type of the controller model (openai, anthropic, google, ollama, xai, defaults to target model type)")
+    parser.add_argument("--controller-model-type", choices=["openai", "anthropic", "google", "ollama", "xai", "litellm"],
+                       help="Type of the controller model (openai, anthropic, google, ollama, xai, litellm, defaults to target model type)")
     parser.add_argument("--severity", type=lambda s: [item.strip() for item in s.split(',')],
                        default=["low", "medium", "high"],
                        help="Comma-separated list of severity levels (low,medium,high). Defaults to all severities.")
