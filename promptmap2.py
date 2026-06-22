@@ -1460,7 +1460,7 @@ def main():
                 raise ValueError(f"Invalid severity level(s): {', '.join(invalid_severities)}. Valid levels are: low, medium, high")
         
         # Validate and process rule types
-        valid_rule_types = {"distraction", "prompt_stealing", "hate", "social_bias", "harmful", "jailbreak"}
+        valid_rule_types = {"distraction", "prompt_stealing", "hate", "social_bias", "harmful", "jailbreak", "indirect_injection"}
         if args.rule_type == ["all"]:
             rule_types = None  # None means all types
         else:

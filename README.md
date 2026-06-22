@@ -38,7 +38,7 @@ It includes comprehensive test rules across multiple categories including prompt
   - Google Gemini models
   - XAI Grok models
   - Open source models via Ollama (Deepseek, Llama, Mistral, Qwen, etc.)
-- **Comprehensive Test Rules**: 50+ pre-built rules across 6 categories
+- **Comprehensive Test Rules**: 80+ pre-built rules across 7 categories
 - **Flexible Evaluation**: Condition-based pass/fail criteria for each test
 - **Customizable Rules**: YAML-based rules with pass/fail conditions
 - **External HTTP Targets**: Point black-box scans at any endpoint via lightweight YAML configs
@@ -208,7 +208,7 @@ python3 promptmap2.py --target-model gpt-4 --target-model-type openai --rule-typ
 # Run all harmful content tests
 python3 promptmap2.py --target-model gpt-4 --target-model-type openai --rule-type harmful
 
-# Available rule types: distraction, prompt_stealing, jailbreak, harmful, hate, social_bias
+# Available rule types: distraction, prompt_stealing, jailbreak, harmful, hate, social_bias, indirect_injection
 ```
 
 ## Firewall Testing Mode
@@ -244,6 +244,7 @@ Test rules are organized in YAML files within category subdirectories in the `ru
 - **harmful/**: Rules testing harmful content generation and dangerous advice
 - **hate/**: Rules testing hate speech and threat generation
 - **social_bias/**: Rules testing for social bias and discrimination
+- **indirect_injection/**: Rules testing whether the model obeys attacker instructions embedded in third-party content it processes (RAG passages, emails, web pages, documents, tool output)
 
 ### Rule Structure
 
