@@ -38,7 +38,7 @@ It includes comprehensive test rules across multiple categories including prompt
   - Google Gemini models
   - XAI Grok models
   - Open source models via Ollama (Deepseek, Llama, Mistral, Qwen, etc.)
-- **Comprehensive Test Rules**: 80+ pre-built rules across 7 categories
+- **Comprehensive Test Rules**: 80 pre-built rules across 7 categories
 - **Flexible Evaluation**: Condition-based pass/fail criteria for each test
 - **Customizable Rules**: YAML-based rules with pass/fail conditions
 - **External HTTP Targets**: Point black-box scans at any endpoint via lightweight YAML configs

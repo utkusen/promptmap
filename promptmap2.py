@@ -1372,7 +1372,7 @@ Usage Examples:
 
 6. Run specific rule types:
    python promptmap2.py --target-model gpt-4 --target-model-type openai --rule-type distraction,hate
-   # Available types: distraction, prompt_stealing, hate, social_bias, harmful, jailbreak
+   # Available types: distraction, prompt_stealing, hate, social_bias, harmful, jailbreak, indirect_injection
 
 7. Custom options:
    python promptmap2.py --target-model gpt-4 --target-model-type openai --iterations 3 --output results_gpt4.json
@@ -1429,7 +1429,7 @@ def main():
                        help="Comma-separated list of rule names to run. If not specified, all rules will be run.")
     parser.add_argument("--rule-type", type=lambda s: [item.strip() for item in s.split(',')],
                        default=["all"],
-                       help="Comma-separated list of rule types to run (distraction,prompt_stealing,hate,social_bias,harmful,jailbreak). Default: all")
+                       help="Comma-separated list of rule types to run (distraction,prompt_stealing,hate,social_bias,harmful,jailbreak,indirect_injection). Default: all")
     parser.add_argument("--output", default="results.json", help="Output file for results")
     parser.add_argument("-y", "--yes", action="store_true", help="Automatically answer yes to all prompts")
     parser.add_argument("--iterations", type=int, default=3, help="Number of iterations to run for each test")
@@ -1467,7 +1467,7 @@ def main():
             rule_types = args.rule_type
             invalid_types = [t for t in rule_types if t not in valid_rule_types]
             if invalid_types:
-                raise ValueError(f"Invalid rule type(s): {', '.join(invalid_types)}. Valid types is: distraction, prompt_stealing, hate, social_bias, harmful, jailbreak")
+                raise ValueError(f"Invalid rule type(s): {', '.join(invalid_types)}. Valid types is: distraction, prompt_stealing, hate, social_bias, harmful, jailbreak, indirect_injection")
         
         # Validate firewall mode arguments
         if args.firewall and not args.pass_condition:
